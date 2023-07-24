@@ -43,7 +43,7 @@
             // selectedDir
             // 
             selectedDir.Enabled = false;
-            selectedDir.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            selectedDir.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             selectedDir.Location = new Point(36, 44);
             selectedDir.Name = "selectedDir";
             selectedDir.Size = new Size(540, 30);
@@ -52,16 +52,16 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label1.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             label1.Location = new Point(36, 18);
             label1.Name = "label1";
-            label1.Size = new Size(114, 23);
+            label1.Size = new Size(116, 23);
             label1.TabIndex = 1;
             label1.Text = "Path to folder";
             // 
             // browseButton
             // 
-            browseButton.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            browseButton.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             browseButton.Location = new Point(591, 44);
             browseButton.Name = "browseButton";
             browseButton.Size = new Size(166, 30);
@@ -72,7 +72,7 @@
             // 
             // extensionsList
             // 
-            extensionsList.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            extensionsList.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             extensionsList.FormattingEnabled = true;
             extensionsList.Items.AddRange(new object[] { " " });
             extensionsList.Location = new Point(36, 122);
@@ -83,18 +83,17 @@
             // progressOutput
             // 
             progressOutput.Enabled = false;
-            progressOutput.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            progressOutput.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             progressOutput.Location = new Point(256, 122);
             progressOutput.Name = "progressOutput";
             progressOutput.Size = new Size(501, 245);
             progressOutput.TabIndex = 4;
             progressOutput.Text = "";
-            //progressOutput.TextChanged += richTextBox1_TextChanged;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label2.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             label2.Location = new Point(256, 96);
             label2.Name = "label2";
             label2.Size = new Size(75, 23);
@@ -104,16 +103,16 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            label3.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             label3.Location = new Point(36, 96);
             label3.Name = "label3";
-            label3.Size = new Size(90, 23);
+            label3.Size = new Size(91, 23);
             label3.TabIndex = 6;
             label3.Text = "Extensions";
             // 
             // sortButton
             // 
-            sortButton.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            sortButton.Font = new Font("Segoe UI Semibold", 12.75F, FontStyle.Bold, GraphicsUnit.Point);
             sortButton.Location = new Point(633, 391);
             sortButton.Name = "sortButton";
             sortButton.Size = new Size(124, 35);
