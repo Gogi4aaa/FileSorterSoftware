@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            selectedDir = new TextBox();
+            dirTextBox = new TextBox();
             label1 = new Label();
             browseButton = new Button();
-            extensionsList = new CheckedListBox();
+            extensionsCheckedListBox = new CheckedListBox();
             progressOutput = new RichTextBox();
             label2 = new Label();
             label3 = new Label();
@@ -40,14 +40,14 @@
             folderDialog = new FolderBrowserDialog();
             SuspendLayout();
             // 
-            // selectedDir
+            // dirTextBox
             // 
-            selectedDir.Enabled = false;
-            selectedDir.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
-            selectedDir.Location = new Point(36, 44);
-            selectedDir.Name = "selectedDir";
-            selectedDir.Size = new Size(540, 30);
-            selectedDir.TabIndex = 0;
+            dirTextBox.Enabled = false;
+            dirTextBox.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            dirTextBox.Location = new Point(36, 44);
+            dirTextBox.Name = "dirTextBox";
+            dirTextBox.Size = new Size(540, 30);
+            dirTextBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -68,17 +68,17 @@
             browseButton.TabIndex = 2;
             browseButton.Text = "Browse";
             browseButton.UseVisualStyleBackColor = true;
-            browseButton.Click += browseButton_Click;
+            browseButton.Click += BrowseButton_Click;
             // 
-            // extensionsList
+            // extensionsCheckedListBox
             // 
-            extensionsList.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
-            extensionsList.FormattingEnabled = true;
-            extensionsList.Items.AddRange(new object[] { " " });
-            extensionsList.Location = new Point(36, 122);
-            extensionsList.Name = "extensionsList";
-            extensionsList.Size = new Size(114, 304);
-            extensionsList.TabIndex = 3;
+            extensionsCheckedListBox.Font = new Font("Segoe UI", 12.75F, FontStyle.Regular, GraphicsUnit.Point);
+            extensionsCheckedListBox.FormattingEnabled = true;
+            extensionsCheckedListBox.Items.AddRange(new object[] { " " });
+            extensionsCheckedListBox.Location = new Point(36, 122);
+            extensionsCheckedListBox.Name = "extensionsCheckedListBox";
+            extensionsCheckedListBox.Size = new Size(114, 304);
+            extensionsCheckedListBox.TabIndex = 3;
             // 
             // progressOutput
             // 
@@ -89,7 +89,6 @@
             progressOutput.Size = new Size(501, 245);
             progressOutput.TabIndex = 4;
             progressOutput.Text = "";
-            //progressOutput.TextChanged += richTextBox1_TextChanged;
             // 
             // label2
             // 
@@ -120,7 +119,7 @@
             sortButton.TabIndex = 7;
             sortButton.Text = "Sort";
             sortButton.UseVisualStyleBackColor = true;
-            sortButton.Click += sortButton_Click;
+            sortButton.Click += SortButton_Click;
             // 
             // folderDialog
             // 
@@ -137,10 +136,10 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(progressOutput);
-            Controls.Add(extensionsList);
+            Controls.Add(extensionsCheckedListBox);
             Controls.Add(browseButton);
             Controls.Add(label1);
-            Controls.Add(selectedDir);
+            Controls.Add(dirTextBox);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             RightToLeftLayout = true;
@@ -151,10 +150,10 @@
 
         #endregion
 
-        private TextBox selectedDir;
+        private TextBox dirTextBox;
         private Label label1;
         private Button browseButton;
-        private CheckedListBox extensionsList;
+        private CheckedListBox extensionsCheckedListBox;
         private RichTextBox progressOutput;
         private Label label2;
         private Label label3;

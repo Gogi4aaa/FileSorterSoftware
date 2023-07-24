@@ -1,112 +1,138 @@
-using System.Text;
+using System.Linq;
 
 namespace FileSorterSoftware
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
+        public Form1() => InitializeComponent();
 
-        private string dir = string.Empty;
+        private string selectedDir = string.Empty;
         private string[] filePaths;
         private string[] extensions;
-        private void browseButton_Click(object sender, EventArgs e)
+
+        private void BrowseButton_Click(object sender, EventArgs e)
         {
-            if (folderDialog.ShowDialog() == DialogResult.OK)
+            if (!(folderDialog.ShowDialog() == DialogResult.OK)) return;
+
+            selectedDir = folderDialog.SelectedPath;
+            filePaths = Directory.GetFiles(selectedDir, "*.*",
+                SearchOption.TopDirectoryOnly);
+
+            if (filePaths.Length == 0)
             {
-                dir = folderDialog.SelectedPath;
-                selectedDir.Text = dir;
-                filePaths = Directory.GetFiles(dir, "*.*",
-                    SearchOption.TopDirectoryOnly);
-                extensions = filePaths.Select(x => x.Substring(x.LastIndexOf("."))).Distinct().OrderBy(x => x[1]).ToArray();
-                if (filePaths.Length == 0)
-                {
-                    selectedDir.Text = string.Empty;
-                    MessageBox.Show("No files in selected folder!", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // UI updates
+                dirTextBox.Text = string.Empty;
+                MessageBox.Show("No files in selected folder!", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                    return;
-                }
-
-                extensionsList.Items.Clear();
-                extensionsList.Items.AddRange(extensions);
+                return;
             }
+
+            extensions = filePaths
+                .Select(x => x[x.LastIndexOf(".")..])  // x = "file.jpg"; x[x.LastIndexOf(".")..] = ".jpg";
+                .Distinct()  // we don't want duplicates
+                .OrderBy(x => x[1])  // sort alphabetically (x[0] = '.')
+                .ToArray();
+
+            // UI updates
+            dirTextBox.Text = selectedDir;
+            extensionsCheckedListBox.Items.Clear();
+            extensionsCheckedListBox.Items.AddRange(extensions);
         }
 
-        private void sortButton_Click(object sender, EventArgs e)
+        private void SortButton_Click(object sender, EventArgs e)
         {
-            progressOutput.Text = string.Empty;
-            if (dir.Length == 0)
+            // UI updates
+            progressOutput.Clear();
+
+            if (selectedDir.Length == 0)
             {
                 MessageBox.Show("No folder selected!", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
             }
-            string[] prefferedExtensions = extensionsList.CheckedItems.Count > 0 ? extensionsList.CheckedItems.OfType<string>().ToArray() : extensions;
-            string[] targetFiles = filePaths.Where(x => prefferedExtensions.Contains(x.Substring(x.LastIndexOf(".")))).ToArray();
 
-            foreach (var prefferedExtension in prefferedExtensions)
+            // if there are checked items, set them to prefferedExtensions, otherwise set all extensions
+            string[] prefferedExtensions = extensionsCheckedListBox.CheckedItems.Count > 0 ?
+                extensionsCheckedListBox.CheckedItems.OfType<string>().ToArray() : extensions;
+
+            // from filePaths, set only files whose extension is in prefferedExtensions to targetFiles
+            string[] targetFiles = filePaths
+                .Where(x => prefferedExtensions.Contains(x[x.LastIndexOf(".")..]))
+                .ToArray();
+
+            int foldersCreated = 0;
+            int filesSorted = 0;
+
+            foreach (var (extension, folderName, newDir) in from extension in prefferedExtensions
+                                                            let folderName = $@"{extension.TrimStart('.').ToUpper()} Files"
+                                                            let newDir = selectedDir + @"\" + folderName
+                                                            select (extension, folderName, newDir))
             {
-                string dirName = $@"{prefferedExtension.TrimStart('.').ToUpper()} Files";
-                string newDir = dir + @"\" + dirName;
-
-                if (!Directory.Exists(newDir))
+                if (Directory.Exists(newDir))
                 {
-                    Directory.CreateDirectory(newDir);
-                    progressOutput.Text += $"Directory \"{dirName}\" was created successfully!" + Environment.NewLine;
+                    // UI updates
+                    progressOutput.Text += $"Directory \"{folderName}\" already exists!"
+                        + Environment.NewLine;
                 }
                 else
                 {
-                    progressOutput.Text += $"Directory \"{dirName}\" already exists!" + Environment.NewLine;
+                    Directory.CreateDirectory(newDir);
+                    foldersCreated++;
+
+                    // UI updates
+                    progressOutput.Text += $"Directory \"{folderName}\" was created successfully!"
+                        + Environment.NewLine;
                 }
 
-                foreach (var targetFile in targetFiles.Where(x => x.Substring(x.LastIndexOf(".")) == prefferedExtension))
+                // set the files, whose extension is equal to the current one to files
+                string[] files = targetFiles
+                    .Where(x => x[x.LastIndexOf(".")..] == extension)
+                    .ToArray();
+
+                int filesMoved = 0;
+
+                foreach (var (file, fileName, newPath) in from file in files
+                                                          let fileName = file[(file.LastIndexOf("\\") + 1)..]
+                                                          let newPath = newDir + @"\" + fileName
+                                                          select (file, fileName, newPath))
                 {
-
-                    string fileName = targetFile.Substring(targetFile.LastIndexOf("\\") + 1);
-                    string newPath = newDir + @"\" + fileName;
-                    string rawName = fileName.Substring(0, fileName.Length - prefferedExtension.Length);
-                    string newName = (string)rawName;
-                    
-                    while (File.Exists(newPath))
+                    if (File.Exists(newPath))
                     {
-                        if (newName.Length <= 3)
-                        {
-                            newName += "(1)";
-                        }
-                        else if (newName[^3] == '(' && Char.IsDigit(newName[^2]) && newName[^1] == ')')
-                        {
-                            StringBuilder sb = new StringBuilder(newName);
-                            sb[^2] = Convert.ToChar((int)(Char.GetNumericValue(sb[^2]) + 1) + '0');
-                            newName = sb.ToString();
-                        }
-                        else
-                        {
-                            newName += "(1)";
-                        }
+                        // UI updates
+                        progressOutput.Text += $"Failed moving \"{fileName}\" to \"{folderName}\"!"
+                            + Environment.NewLine;
+                        progressOutput.Text += $"File \"{fileName}\" already exists at \"{folderName}\"!"
+                            + Environment.NewLine;
 
-                        fileName = newName + prefferedExtension;
-                        newPath = newDir + @"\" + fileName;
-                        if (!File.Exists(newPath))
-                        {
-                            progressOutput.Text += $"Renamed \"{rawName + prefferedExtension}\" to \"{fileName}\"!" + Environment.NewLine;
-                        }
+                        continue;
                     }
-                    File.Move(targetFile, newPath);
-                    progressOutput.Text += $"Successfully moved \"{fileName}\" to \"{dirName}\"!";
-                    progressOutput.Text += Environment.NewLine;
+
+                    File.Move(file, newPath);
+                    filesMoved++;
+
+                    // UI updates
+                    progressOutput.Text += $"Successfully moved \"{fileName}\" to \"{folderName}\"!"
+                        + Environment.NewLine;
                 }
+
+                filesSorted += filesMoved;
+
+                // UI updates
+                progressOutput.Text += $"Successfully moved {filesMoved} files to \"{folderName}\"! (Failed: {files.Length - filesMoved})"
+                    + Environment.NewLine;
             }
 
-            dir = string.Empty;
-            selectedDir.Text = string.Empty;
-            extensionsList.Items.Clear();
+            selectedDir = string.Empty;
+
+            // UI updates
+            dirTextBox.Clear();
+            extensionsCheckedListBox.Items.Clear();
+            progressOutput.Text += $"Successfully created {foldersCreated} folders!"
+                    + Environment.NewLine;
+            progressOutput.Text += $"Successfully sorted {filesSorted} files! (Failed: {targetFiles.Length - filesSorted})"
+                    + Environment.NewLine;
         }
-
-
-
     }
 }
